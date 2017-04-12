@@ -1,0 +1,130 @@
+https://www.youtube.com/watch?v=A42FG4LzdbY
+
+ALTER TABLE results
+ADD FOREIGN KEY fk_sid(st_id)
+REFERENCES students(iid)
+ON DELETE NO ACTION
+ON UPDATE CASCADE;
+
+
+http://stackoverflow.com/questions/5396717/joining-3-three-tables
+
+http://www.dofactory.com/sql/join
+
+
+SELECT sdn.name, sbj.subject_name, rs.result 
+FROM results as rs 
+INNER JOIN students as sdn on rs.st_id = sdn.iid 
+INNER JOIN subjects as sbj on rs.sub_id = sbj.iid
+ORDER BY sdn.iid 
+
+
+SELECT st.name, sub.subject_name, rs.result
+FROM results as rs
+INNER JOIN studensts_subjects as ss ON ss.st_id = rs.st_id AND ss.sub_id = rs.sub_id
+INNER JOIN students as st on st.iid = ss.st_id
+INNER JOIN subjects as sub on sub.iid = rs.sub_id
+
+
+SELECT max(rs.result), st.name, sub.subject_name
+FROM results as rs
+INNER JOIN students as st ON st.iid = rs.st_id
+INNER JOIN subjects as sub ON sub.iid = rs.sub_id
+GROUP by rs.sub_id
+
+
+SELECT ingredient_name, recipe_name
+FROM recipe_ingredients
+INNER JOIN recipes
+ON recipe_ingredients.recipe_id = recipes.recipe_id
+INNER JOIN ingredients
+on recipe_ingredients.ingredient_id = ingredients.ingredient_id
+
+
+
+SELECT COUNT(*) as ct, st.name
+FROM students as st
+INNER JOIN studensts_subjects as ss
+on st.iid = ss.st_id
+WHERE st.age > 24
+GROUP BY ss.st_id
+HAVING ct > 1
+
+
+
+
+
+SELECT rs.st_id, rs.sub_id, rs.result
+FROM results as rs,
+(
+    SELECT MAX(result) as result, res.sub_id
+ 	FROM results as res
+    GROUP BY res.sub_id
+) as rus
+WHERE rus.result = rs.result
+AND rus.sub_id = rs.sub_id
+
+
+
+
+
+SELECT age
+FROM `students`
+GROUP BY age
+ORDER BY age DESC
+LIMIT 2, 1
+
+
+
+
+
+*****************************************
+
+
+Stored Procedure
+
+DELIMITER $$
+CREATE PROCEDURE testing3(IN getage int)
+BEGIN
+SELECT * FROM test where age = getage;
+END
+$$
+
+
+
+*********************************************
+
+
+
+*********************************************
+
+View
+
+CREATE VIEW test_view_2 AS
+SELECT * FROM test
+
+
+*********************************************
+
+
+
+
+********************************************
+
+Delete subquery
+
+
+DELETE FROM students
+WHERE name = "Ayesha" AND
+iid != (
+SELECT iid 
+FROM (
+    SELECT iid FROM
+    students
+WHERE name = "Ayesha"
+ORDER BY iid ASC
+LIMIT 1
+) X)
+
+
+***********************************************
